@@ -2,7 +2,6 @@ import { useState } from "react";
 import LightFrame from "../components/LightFrame";
 import { asset } from "../lib/asset";
 import { Registros, mensajeDe, type Persona } from "../lib/api";
-import { contactoDe, enviarEvius } from "../lib/evius";
 
 interface Props {
   persona: Persona;
@@ -30,10 +29,6 @@ export default function Extra({ persona, onTerminar }: Props) {
     setError("");
     try {
       await Registros.actualizar(persona.id, { lienzo: id });
-      // La participación (con el lienzo elegido) va a Evius en segundo plano. Solo si la persona se registró en este equipo:
-      // el acceso rápido por ID no devuelve el correo, así que ahí no hay con qué identificarla en Evius.
-      const contacto = contactoDe(persona.id);
-      if (contacto) void enviarEvius(contacto, { lienzo: id });
       onTerminar({ ...persona, lienzo: id });
     } catch (err) {
       setError(mensajeDe(err));
